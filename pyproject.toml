@@ -1,0 +1,16 @@
+[project]
+name = "ai-vision"
+version = "0.1.0"
+description = "Face detection and recognition using YOLO + InsightFace"
+authors = [
+    { name = "frdiskandar", email = "fariditb159@gmail.com" }
+]
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "ultralytics>=8.0.0",
+    "insightface>=0.7.3",
+    "onnxruntime>=1.16.0",
+    "opencv-python>=4.8.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+]

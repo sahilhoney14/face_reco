@@ -1,5 +1,14 @@
-import argparse
+import os
 import sys
+import argparse
+import warnings
+
+# Suppress internal third-party library warnings (e.g., insightface/scikit-image deprecations)
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# Ensure workspace root is in python module search path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import cv2
 import numpy as np

@@ -1,1 +1,7 @@
-*.venv
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+output_test.png
+test_detected.png
+result.png

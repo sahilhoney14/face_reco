@@ -9,11 +9,17 @@ class FaceDetector:
         self.conf_threshold = conf_threshold
 
     def detect_faces(self, frame: np.ndarray) -> list[dict]:
+        if frame is None or frame.size == 0:
+            return []
+
+        h, w = frame.shape[:2]
         results = self.model(frame, verbose=False)
         faces = []
 
         for result in results:
-            for box in result.boxes: #type:ignore
+            if result.boxes is None:
+                continue
+            for box in result.boxes:
                 cls = int(box.cls[0])
                 conf = float(box.conf[0])
 
@@ -21,8 +27,15 @@ class FaceDetector:
                     continue
 
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
-                face_crop = frame[y1:y2, x1:x2]
+                x1 = max(0, min(w - 1, x1))
+                y1 = max(0, min(h - 1, y1))
+                x2 = max(0, min(w, x2))
+                y2 = max(0, min(h, y2))
 
+                if x2 <= x1 or y2 <= y1:
+                    continue
+
+                face_crop = frame[y1:y2, x1:x2]
                 if face_crop.size == 0:
                     continue
 
@@ -37,5 +50,5 @@ class FaceDetector:
     def detect_faces_from_image(self, image_path: str) -> list[dict]:
         frame = cv2.imread(image_path)
         if frame is None:
-            raise FileNotFoundError(f"Tidak bisa membaca gambar: {image_path}")
+            raise FileNotFoundError(f"Unable to read image: {image_path}")
         return self.detect_faces(frame)

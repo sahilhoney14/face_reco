@@ -11,12 +11,20 @@ class FaceDatabase:
 
     def _load(self):
         if os.path.exists(self.db_path):
-            with open(self.db_path, "r") as f:
-                self.data = json.load(f)
+            try:
+                with open(self.db_path, "r", encoding="utf-8") as f:
+                    content = f.read().strip()
+                    self.data = json.loads(content) if content else {}
+            except Exception as e:
+                print(f"[WARN] Failed to load database '{self.db_path}': {e}. Initializing empty database.")
+                self.data = {}
 
     def _save(self):
-        with open(self.db_path, "w") as f:
-            json.dump(self.data, f, indent=2)
+        parent_dir = os.path.dirname(os.path.abspath(self.db_path))
+        if parent_dir:
+            os.makedirs(parent_dir, exist_ok=True)
+        with open(self.db_path, "w", encoding="utf-8") as f:
+            json.dump(self.data, f, indent=2, ensure_ascii=False)
 
     def register(self, name: str, embedding: np.ndarray):
         emb_list = embedding.tolist()
